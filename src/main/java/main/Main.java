@@ -7,7 +7,6 @@ public class Main
 //	correction: "Hello World" requires comma
 //	System.out.println("Hello World");
 		System.out.println("Hello, World");
-
-
+		System.out.println("This is feature 1");
 	}
 }
