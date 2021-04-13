@@ -39,4 +39,28 @@ public class BasicBook implements Book
 	{
 		return title + " von " + author;
 	}
+
+	@Override
+	public int hashCode()
+	{
+		return title.length() + author.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object that)
+	{
+		if(this == that)
+			return true;
+
+		if(that == null)
+			return false;
+
+		if(!this.getClass().equals(that.getClass()))
+			return false;
+
+		BasicBook thatBook = (BasicBook) that;
+
+		return this.title.equals(thatBook.title) &&
+			     this.author.equals(thatBook.author);
+	}
 }
