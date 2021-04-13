@@ -4,22 +4,26 @@ import atdit_ibait_20.library.model.AbstractLibraryFactory;
 import atdit_ibait_20.library.model.Author;
 import atdit_ibait_20.library.model.Book;
 import atdit_ibait_20.library.model.Catalog;
-import atdit_ibait_20.library.model.implementation.BasicAuthor;
-import atdit_ibait_20.library.model.implementation.BasicBook;
-import atdit_ibait_20.library.model.implementation.BasicCatalog;
 import atdit_ibait_20.library.persistence.BookService;
 import atdit_ibait_20.library.persistence.BookServiceFactory;
-import atdit_ibait_20.library.persistence.implementation.MockBookService;
-import atdit_ibait_20.library.persistence.implementation.MockBookServiceFactory;
 import atdit_ibait_20.library.presentation.Presentation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.MessageFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class ConsolePresentation implements Presentation
 {
+	private static final String RESOURCE_BUNDLE_PATH = "i18n/console_presentation/console_presentation"; //NON-NLS
+	public static final String USER_INPUT_E = "E"; //NON-NLS
+	public static final String USER_INPUT_A = "A"; //NON-NLS
+
 	public interface ConsoleInputRequester
 	{
 		String requestInput();
@@ -28,12 +32,14 @@ public class ConsolePresentation implements Presentation
 	private boolean userDecidedToEndProgram;
 	private final Catalog catalog;
 	ConsoleInputRequester consoleInputRequester;
+	private final ResourceBundle resourceBundle;
 
 	public ConsolePresentation()
 	{
 		this.userDecidedToEndProgram = false;
 		this.catalog = AbstractLibraryFactory.get().makeCatalog();
 		consoleInputRequester = this::requestInput;
+		this.resourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE_PATH);
 	}
 
 	@Override
@@ -41,11 +47,25 @@ public class ConsolePresentation implements Presentation
 	{
 		while(!userDecidedToEndProgram)
 		{
+			System.out.println();
+			this.printTime();
 			this.loadBooks();
 			this.displayBooks();
 			this.userInteraction();
 			this.updateBooks();
 		}
+	}
+
+	private void printTime()
+	{
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(
+			FormatStyle.LONG );
+		ZonedDateTime now = ZonedDateTime.now();
+		String formattedNow = dateTimeFormatter.format(now);
+
+		System.out.println(
+			MessageFormat.format(
+				resourceBundle.getString("current.time.0"), formattedNow));
 	}
 
 	private void updateBooks()
@@ -65,7 +85,7 @@ public class ConsolePresentation implements Presentation
 
 	private void printError(BookService.BookServiceException e)
 	{
-		System.out.println("error" + ": " + e.getMessage());
+		System.out.println(MessageFormat.format(resourceBundle.getString("error.0"), e.getMessage()));
 	}
 
 	private void userInteraction()
@@ -77,28 +97,28 @@ public class ConsolePresentation implements Presentation
 
 	private void reactOnInput(String input)
 	{
-		if(Objects.equals(input, "E"))
+		if(Objects.equals(input, USER_INPUT_E))
 		{
 			userDecidedToEndProgram();
 		}
-		else if(Objects.equals(input, "A"))
+		else if(Objects.equals(input, USER_INPUT_A))
 		{
 			startProcessAddNewBook();
 		}
 		else
 		{
-			System.out.println("Unknown user command");
+			System.out.println(resourceBundle.getString("unknown.user.command"));
 		}
 	}
 
 	private void startProcessAddNewBook()
 	{
-		System.out.println("Please enter book details: ");
-		System.out.print("\t" + "Author: ");
+		System.out.println(resourceBundle.getString("please.enter.book.details"));
+		System.out.print("\t" + resourceBundle.getString("author"));
 		String author = readUserInput();
-		System.out.print("\t" + "Title: ");
+		System.out.print("\t" + resourceBundle.getString("title"));
 		String title = readUserInput();
-		System.out.print("\t" + "Description: ");
+		System.out.print("\t" + resourceBundle.getString("description"));
 		String description = readUserInput();
 
 		Author authorObj = AbstractLibraryFactory.get().makeAuthor(author);
@@ -113,7 +133,7 @@ public class ConsolePresentation implements Presentation
 	private void userDecidedToEndProgram()
 	{
 		userDecidedToEndProgram = true;
-		System.out.println("Good bye");
+		System.out.println(resourceBundle.getString("good.bye"));
 	}
 
 	private String readUserInput()
@@ -136,17 +156,17 @@ public class ConsolePresentation implements Presentation
 
 	private void printUserOptions()
 	{
-		System.out.println("What do you want to do?");
-		System.out.println("\t" + "(A)dd Book");
-		System.out.println("\t" + "(E)xit");
-		System.out.print("Please decide: ");
+		System.out.println(resourceBundle.getString("what.do.you.want.to.do"));
+		System.out.println(resourceBundle.getString("a.dd.book"));
+		System.out.println(resourceBundle.getString("e.xit"));
+		System.out.print(resourceBundle.getString("please.decide"));
 	}
 
 	private void displayBooks()
 	{
 		int counter = 0;
 
-		System.out.println("catalog contains the following books");
+		System.out.println(resourceBundle.getString("catalog.contains.the.following.books"));
 		for(Book book : this.catalog)
 		{
 			System.out.println("\t" + ++counter + ": " + book);
