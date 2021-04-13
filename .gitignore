@@ -31,3 +31,8 @@ hs_err_pid*
 /target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
 /library.iml
 /target/maven-archiver/pom.properties
+/target/surefire-reports/atdit_ibait_20.library.model.implementation.BasicAuthorTest.txt
+/target/surefire-reports/atdit_ibait_20.library.presentation.implementation.ConsolePresentationTest.txt
+/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
+/target/surefire-reports/TEST-atdit_ibait_20.library.model.implementation.BasicAuthorTest.xml
+/target/surefire-reports/TEST-atdit_ibait_20.library.presentation.implementation.ConsolePresentationTest.xml
