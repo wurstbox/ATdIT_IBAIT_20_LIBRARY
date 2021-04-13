@@ -16,13 +16,20 @@ import java.util.Objects;
 
 public class ConsolePresentation implements Presentation
 {
+	public interface ConsoleInputRequester
+	{
+		String requestInput();
+	}
+
 	private boolean userDecidedToEndProgram;
 	private final Catalog catalog;
+	ConsoleInputRequester consoleInputRequester;
 
 	public ConsolePresentation()
 	{
 		this.userDecidedToEndProgram = false;
 		this.catalog = new BasicCatalog();
+		consoleInputRequester = this::requestInput;
 	}
 
 	@Override
@@ -103,6 +110,11 @@ public class ConsolePresentation implements Presentation
 	}
 
 	private String readUserInput()
+	{
+		return consoleInputRequester.requestInput();
+	}
+
+	private String requestInput()
 	{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try
