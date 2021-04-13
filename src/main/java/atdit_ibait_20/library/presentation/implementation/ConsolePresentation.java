@@ -1,12 +1,16 @@
 package atdit_ibait_20.library.presentation.implementation;
 
+import atdit_ibait_20.library.model.AbstractLibraryFactory;
+import atdit_ibait_20.library.model.Author;
 import atdit_ibait_20.library.model.Book;
 import atdit_ibait_20.library.model.Catalog;
 import atdit_ibait_20.library.model.implementation.BasicAuthor;
 import atdit_ibait_20.library.model.implementation.BasicBook;
 import atdit_ibait_20.library.model.implementation.BasicCatalog;
 import atdit_ibait_20.library.persistence.BookService;
+import atdit_ibait_20.library.persistence.BookServiceFactory;
 import atdit_ibait_20.library.persistence.implementation.MockBookService;
+import atdit_ibait_20.library.persistence.implementation.MockBookServiceFactory;
 import atdit_ibait_20.library.presentation.Presentation;
 
 import java.io.BufferedReader;
@@ -28,7 +32,7 @@ public class ConsolePresentation implements Presentation
 	public ConsolePresentation()
 	{
 		this.userDecidedToEndProgram = false;
-		this.catalog = new BasicCatalog();
+		this.catalog = AbstractLibraryFactory.get().makeCatalog();
 		consoleInputRequester = this::requestInput;
 	}
 
@@ -46,7 +50,9 @@ public class ConsolePresentation implements Presentation
 
 	private void updateBooks()
 	{
-		BookService service = new MockBookService();
+		BookServiceFactory factory = BookServiceFactory.getInstance();
+		BookService service = factory.get();
+
 		try
 		{
 			service.postBooks(this.catalog);
@@ -95,10 +101,11 @@ public class ConsolePresentation implements Presentation
 		System.out.print("\t" + "Description: ");
 		String description = readUserInput();
 
-		Book book = new BasicBook(
-			description,
+		Author authorObj = AbstractLibraryFactory.get().makeAuthor(author);
+		Book book = AbstractLibraryFactory.get().makeBook(
 			title,
-  		new BasicAuthor(author) );
+			authorObj,
+			description );
 
 		this.catalog.add(book);
 	}
@@ -149,7 +156,9 @@ public class ConsolePresentation implements Presentation
 
 	private void loadBooks()
 	{
-		BookService service = new MockBookService();
+		BookServiceFactory factory = BookServiceFactory.getInstance();
+		BookService service = factory.get();
+
 		this.catalog.clear();
 		try
 		{
