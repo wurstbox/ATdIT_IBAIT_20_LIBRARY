@@ -16,4 +16,10 @@ public class BasicAuthor implements Author
 	{
 		return this.name;
 	}
+
+	@Override
+	public String toString()
+	{
+		return name;
+	}
 }

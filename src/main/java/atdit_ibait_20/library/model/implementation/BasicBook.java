@@ -33,4 +33,10 @@ public class BasicBook implements Book
 	{
 		return this.description;
 	}
+
+	@Override
+	public String toString()
+	{
+		return title + " von " + author;
+	}
 }
